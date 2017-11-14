@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Documentation for <%= inspect(@router) %></title>
+  </head>
+
+  <body>
+    <h1>Documentation for <%= inspect(@router) %></h1>
+
+    <%= for route <- @routes, docs = get_docs(route.plug, route.opts) do %>
+      <section>
+        <h2>
+          <span><%= String.upcase(Atom.to_string(route.verb)) %></span>
+          <%= route.path %>
+        </h2>
+        <%= render_docs(docs) %>
+      </section>
+    <% end %>
+  </body>
+</html>
