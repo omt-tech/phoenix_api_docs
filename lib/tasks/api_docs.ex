@@ -15,9 +15,13 @@ defmodule Mix.Tasks.ApiDocs do
   end
 
   defp generate(router) do
-    html = View.page(%{routes: router.__routes__(), router: router})
+    html = View.page(%{routes: group_routes(router), router: router})
     File.mkdir_p!("api_docs")
     File.write!("api_docs/index.html", html)
+  end
+
+  defp group_routes(router) do
+    Enum.group_by(router.__routes__(), &(&1.plug))
   end
 
   defp router(nil, base) do

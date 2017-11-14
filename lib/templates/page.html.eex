@@ -7,13 +7,21 @@
   <body>
     <h1>Documentation for <%= inspect(@router) %></h1>
 
-    <%= for route <- @routes, docs = get_docs(route.plug, route.opts) do %>
+    <%= for {controller, routes} <- @routes, has_docs?(controller) do %>
       <section>
-        <h2>
-          <span><%= String.upcase(Atom.to_string(route.verb)) %></span>
-          <%= route.path %>
-        </h2>
-        <%= render_docs(docs) %>
+        <%= if controller_doc = get_controller_docs(controller) do %>
+          <h2><%= controller_doc.title %></h2>
+          <%= render_docs(controller_doc.doc) %>
+        <% end %>
+        <%= for route <- routes, docs = get_action_docs(controller, route.opts) do %>
+          <section>
+            <h2>
+              <span><%= String.upcase(Atom.to_string(route.verb)) %></span>
+              <%= docs.title || route.path %>
+            </h2>
+            <%= render_docs(docs.doc) %>
+          </section>
+        <% end %>
       </section>
     <% end %>
   </body>
